@@ -1,8 +1,8 @@
 group 'com.darvishi.sina'
-version '0.1.0'
+version '0.3.1'
 
 buildscript {
-    ext.kotlin_version = '1.2.30'
+    ext.kotlin_version = '1.2.31'
 
     repositories {
         mavenCentral()

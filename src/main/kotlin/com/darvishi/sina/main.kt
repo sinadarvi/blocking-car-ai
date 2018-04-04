@@ -7,6 +7,7 @@ fun main(args: Array<String>) {
     val cars = ArrayList<Car>()
     var moves = ArrayList<Move>()
 
+    //Text to Cars
     with(IO()) {
         "./sampleMap.txt".asResource {
             it.lines().forEach {
@@ -16,11 +17,19 @@ fun main(args: Array<String>) {
         }
     }
 
-    with(BFS()){
-        moves = cars.findOneWayOut {
+    //Cars to Moves
+//    with(BFS()){
+//        moves = cars.findOneWayOut {
+//
+//        }
+//    }
 
-        }
+    //Moves to Text
+    with(IO()){
+        moves.makeActionsFile()
     }
 
 }
+
+
 
