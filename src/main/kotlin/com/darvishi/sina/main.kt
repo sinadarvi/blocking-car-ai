@@ -1,10 +1,11 @@
 package com.darvishi.sina
 
-import com.darvishi.sina.uni_search.BFS
+import com.darvishi.sina.unisearch.BFS
 
 fun main(args: Array<String>) {
 
     val cars = ArrayList<Car>()
+    var moves = ArrayList<Move>()
 
     with(IO()) {
         "./sampleMap.txt".asResource {
@@ -14,7 +15,12 @@ fun main(args: Array<String>) {
             }
         }
     }
-    BFS(cars)
+
+    with(BFS()){
+        moves = cars.findOneWayOut {
+
+        }
+    }
 
 }
 
