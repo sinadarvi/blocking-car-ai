@@ -1,5 +1,7 @@
 package com.darvishi.sina
 
+import com.darvishi.sina.uni_search.BFS
+
 fun main(args: Array<String>) {
 
     val cars = ArrayList<Car>()
@@ -7,13 +9,12 @@ fun main(args: Array<String>) {
     with(IO()) {
         "./sampleMap.txt".asResource {
             it.lines().forEach {
-                println(it)
-                cars.add(Car(it))
+                if (it.length > 1)
+                    cars.add(Car(it))
             }
         }
     }
-
-    println(cars.get(0).index)
+    BFS(cars)
 
 }
 
