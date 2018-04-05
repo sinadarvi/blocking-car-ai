@@ -9,7 +9,7 @@ fun main(args: Array<String>) {
 
     //Text to Cars
     with(IO()) {
-        "./sampleMap.txt".asResource {
+        "./sampleMap.txt" asResource {
             it.lines().forEach {
                 if (it.length > 1)
                     cars.add(Car(it))
@@ -18,14 +18,12 @@ fun main(args: Array<String>) {
     }
 
     //Cars to Moves
-//    with(BFS()){
-//        moves = cars.findOneWayOut {
-//
-//        }
-//    }
+    with(BFS()) {
+        moves = cars.findOneWayOut()
+    }
 
     //Moves to Text
-    with(IO()){
+    with(IO()) {
         moves.makeActionsFile()
     }
 
