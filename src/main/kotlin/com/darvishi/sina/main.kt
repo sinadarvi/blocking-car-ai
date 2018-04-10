@@ -9,9 +9,6 @@ fun main(args: Array<String>) {
     val cars = ArrayList<Car>()
     var moves = ArrayList<Move?>()
 
-
-
-
     //Text to Cars
     with(IO()) {
         "./sampleMap.txt" asResource {

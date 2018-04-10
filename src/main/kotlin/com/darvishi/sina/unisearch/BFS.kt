@@ -18,6 +18,7 @@ class BFS {
             if (listOfNodes[0].isItTheAnswer()) {
                 //some work on finding parents moves and add it to 0 array list
                 movesHaveBeenDone.findMoves(listOfNodes[0])
+                break
             } else {
                 listOfNodes.removeAt(0)
                 listOfNodes.findNodes()
@@ -109,15 +110,17 @@ class BFS {
         }
         return matres
     }
+
+    private fun ArrayList<Move?>.findMoves(node: Node?) {
+        node?.move?.let { this.add(0, node.move) }
+        node?.father?.let { this.findMoves(node.father) }
+    }
+
+    private fun Node.isItTheAnswer(): Boolean {
+        return this.cars[0].column == 5
+    }
 }
 
-private fun ArrayList<Move?>.findMoves(node: Node?) {
-    this.add(0, node?.move)
-    this.findMoves(node?.father)
-}
 
-private fun Node.isItTheAnswer(): Boolean {
-    return this.cars[0].column == 5
-}
 
 
