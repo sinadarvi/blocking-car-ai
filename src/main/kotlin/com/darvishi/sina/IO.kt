@@ -9,7 +9,7 @@ class IO{
         work(content)
     }
 
-    fun ArrayList<Move>.makeActionsFile(){
+    fun ArrayList<Move?>.makeActionsFile(){
         File("actions.txt").printWriter().use {
             this.forEach {
                 Move -> it.println(Move)

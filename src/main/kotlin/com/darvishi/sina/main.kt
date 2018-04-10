@@ -2,10 +2,15 @@ package com.darvishi.sina
 
 import com.darvishi.sina.unisearch.BFS
 
+
+class Money(value: Int, type : String)
 fun main(args: Array<String>) {
 
     val cars = ArrayList<Car>()
-    var moves = ArrayList<Move>()
+    var moves = ArrayList<Move?>()
+
+
+
 
     //Text to Cars
     with(IO()) {

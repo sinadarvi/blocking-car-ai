@@ -4,71 +4,96 @@ import com.darvishi.sina.Car
 import com.darvishi.sina.Move
 
 class BFS {
-    fun ArrayList<Car>.findOneWayOut(): ArrayList<Move> {
-        //do BFS
-        val rootNode = Node(this, null, null)
+    fun ArrayList<Car>.findOneWayOut(): ArrayList<Move?> {
 
-        val movesHaveBeenDone = ArrayList<Move>()
-        val listOfPossibleMoves = mutableListOf<Node>()
+        val movesHaveBeenDone = ArrayList<Move?>()
+        val listOfNodes = mutableListOf<Node>()
 
-        val matres = getMatres(cars = this)
+        //adding root node to list of nodes
+        listOfNodes.add(Node(this,null,null))
 
-        listOfPossibleMoves.findMoves(rootNode, matres, cars = this)
+        listOfNodes.findNodes()
 
-        while (listOfPossibleMoves.size == 0) {
-            if (listOfPossibleMoves[0].isItTheAnswer()) {
-
-                break
+        while (listOfNodes.size != 0) {
+            if (listOfNodes[0].isItTheAnswer()) {
+                //some work on finding parents moves and add it to 0 array list
+                movesHaveBeenDone.findMoves(listOfNodes[0])
             } else {
-
+                listOfNodes.removeAt(0)
+                listOfNodes.findNodes()
             }
         }
-
-        //find matres
-        //find moves can be done and add them to end of the set
-        //loop till all moves done {
-        //do on moves
-        //is it answer -> yes : finish
-        //             -> no : continue
-        //find matres
-        //find moves can be done and add them to end of the set }
         return movesHaveBeenDone
     }
 
-    private fun MutableList<Node>.findMoves(fathersNode: Node, matres: Array<IntArray>, cars: ArrayList<Car>) {
-        cars.forEach {
+    private fun MutableList<Node>.findNodes() {
+        val matres = getMatres(this[0].cars)
+        this[0].cars.forEach {
             if (it.dir == 'h') {
                 for (i in 1 until it.column)
                     if (it.column - i >= 1)
-                        if (matres[it.column - i][it.row] != 0) {
+                        if (matres[(it.column - i) - 1][it.row - 1] == 0) {
                             //move to left
-                            val newPosition = cars.clone() as ArrayList<Car>
-                            newPosition[it.index - 1].column = it.column - i
-                            this.add(Node(newPosition, fathersNode, Move(it.index, 'l', i)))
-                        }
-                for(i in 1..(6 - (it.column + it.size)))
-                if (it.column + it.size <= 6)
-                    if (matres[it.column + it.size][it.row] != 0) {
-                        //move to right
-                        val newPosition = cars.clone() as ArrayList<Car>
-                        newPosition[it.index - 1].column = it.column - it.size
-                        this.add(Node(newPosition, fathersNode, Move(it.index, 'r', 1)))
-                    }
+//                            val newPosition = cars.clone() as ArrayList<Car>
+//                            newPosition[it.index - 1].column = it.column - i
+                            val newPosition = ArrayList<Car>()
+                            this[0].cars.forEach { car ->
+                                if (car.index != it.index)
+                                    newPosition.add(Car("${car.index} ${car.row} ${car.column} ${car.dir} ${car.size}"))
+                                else
+                                    newPosition.add(Car("${car.index} ${car.row} ${(it.column - i) - 1} ${car.dir} ${car.size}"))
+                            }
+                            this.add(Node(newPosition, this[0] , Move(it.index, dir = 'l', howMuch = i)))
+                        } else
+                            break
+                for (i in 1..(6 - (it.column + it.size - 1)))
+                    if (it.column + it.size - 1 + i <= 6)
+                        if (matres[((it.column + it.size - 1) + i) - 1][it.row - 1] == 0) {
+                            //move to right
+//                            val newPosition = cars.clone() as ArrayList<Car>
+//                            newPosition[it.index - 1].column = it.column + it.size - 1 + i
+                            val newPosition = ArrayList<Car>()
+                            this[0].cars.forEach { car ->
+                                if (car.index != it.index)
+                                    newPosition.add(Car("${car.index} ${car.row} ${car.column} ${car.dir} ${car.size}"))
+                                else
+                                    newPosition.add(Car("${car.index} ${car.row} ${((it.column + it.size - 1) + i) - 1} ${car.dir} ${car.size}"))
+                            }
+                            this.add(Node(newPosition, this[0], Move(it.index, dir = 'r', howMuch = i)))
+                        } else
+                            break
             } else {
-                if (it.row - 1 >= 1)
-                    if (matres[it.column][it.row - 1] != 0) {
-                        //move to up
-                        val newPosition = cars.clone() as ArrayList<Car>
-                        newPosition[it.index - 1].row = it.row - 1
-                        this.add(Node(newPosition, fathersNode, Move(it.index, 'u', 1)))
-                    }
-                if (it.row + it.size <= 6)
-                    if (matres[it.column][it.row + it.size] != 0) {
-                        //move to down
-                        val newPosition = cars.clone() as ArrayList<Car>
-                        newPosition[it.index - 1].row = it.row + it.size
-                        this.add(Node(newPosition, fathersNode, Move(it.index, 'd', 1)))
-                    }
+                for (i in 1 until it.row)
+                    if (it.row - i >= 1)
+                        if (matres[it.column - 1][(it.row - i) - 1] == 0) {
+                            //move to up
+//                            val newPosition = cars.clone() as ArrayList<Car>
+//                            newPosition[it.index - 1].row = it.row - i
+                            val newPosition = ArrayList<Car>()
+                            this[0].cars.forEach { car ->
+                                if (car.index != it.index)
+                                    newPosition.add(Car("${car.index} ${car.row} ${car.column} ${car.dir} ${car.size}"))
+                                else
+                                    newPosition.add(Car("${car.index} ${(it.row - i) - 1} ${car.column} ${car.dir} ${car.size}"))
+                            }
+                            this.add(Node(newPosition, this[0], Move(it.index, dir = 'u', howMuch = i)))
+                        } else
+                            break
+                for (i in 1..(6 - (it.row + it.size - 1)))
+                    if (it.row + it.size - 1 + i <= 6)
+                        if (matres[it.column - 1][((it.row + it.size - 1) + i) - 1] == 0) {
+                            //move to down
+                            val newPosition = ArrayList<Car>()
+                            this[0].cars.forEach { car ->
+                                if (car.index != it.index)
+                                    newPosition.add(Car("${car.index} ${car.row} ${car.column} ${car.dir} ${car.size}"))
+                                else
+                                    newPosition.add(Car("${car.index} ${((it.row + it.size - 1) + i) - 1} ${car.column} ${car.dir} ${car.size}"))
+                            }
+//                            newPosition[it.index - 1].row = it.row + it.size - 1 + i
+                            this.add(Node(newPosition, this[0], Move(it.index, dir = 'd', howMuch = i)))
+                        } else
+                            break
             }
         }
     }
@@ -79,18 +104,27 @@ class BFS {
             when (it.dir) {
                 'h' -> {
                     for (i in 0 until it.size) {
-                        matres[it.column + i - 1][it.row - 1] = it.index
+                        matres[it.column - 1 + i][it.row - 1] = it.index
                     }
                 }
                 'v' -> {
                     for (i in 0 until it.size) {
-                        matres[it.column - 1][it.row + i - 1] = it.index
+                        matres[it.column - 1][it.row - 1 + i] = it.index
                     }
                 }
             }
         }
         return matres
     }
+}
+
+private fun ArrayList<Move?>.findMoves(node: Node?) {
+    this.add(0, node?.move)
+    this.findMoves(node?.father)
+}
+
+private fun Node.isItTheAnswer(): Boolean {
+    return this.cars[0].column == 5
 }
 
 
