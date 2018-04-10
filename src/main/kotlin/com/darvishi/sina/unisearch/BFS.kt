@@ -34,14 +34,12 @@ class BFS {
                     if (it.column - i >= 1)
                         if (matres[(it.column - i) - 1][it.row - 1] == 0) {
                             //move to left
-//                            val newPosition = cars.clone() as ArrayList<Car>
-//                            newPosition[it.index - 1].column = it.column - i
                             val newPosition = ArrayList<Car>()
                             this[0].cars.forEach { car ->
                                 if (car.index != it.index)
                                     newPosition.add(Car("${car.index} ${car.row} ${car.column} ${car.dir} ${car.size}"))
                                 else
-                                    newPosition.add(Car("${car.index} ${car.row} ${(it.column - i) - 1} ${car.dir} ${car.size}"))
+                                    newPosition.add(Car("${car.index} ${car.row} ${it.column - i} ${car.dir} ${car.size}"))
                             }
                             this.add(Node(newPosition, this[0] , Move(it.index, dir = 'l', howMuch = i)))
                         } else
@@ -50,14 +48,12 @@ class BFS {
                     if (it.column + it.size - 1 + i <= 6)
                         if (matres[((it.column + it.size - 1) + i) - 1][it.row - 1] == 0) {
                             //move to right
-//                            val newPosition = cars.clone() as ArrayList<Car>
-//                            newPosition[it.index - 1].column = it.column + it.size - 1 + i
                             val newPosition = ArrayList<Car>()
                             this[0].cars.forEach { car ->
                                 if (car.index != it.index)
                                     newPosition.add(Car("${car.index} ${car.row} ${car.column} ${car.dir} ${car.size}"))
                                 else
-                                    newPosition.add(Car("${car.index} ${car.row} ${((it.column + it.size - 1) + i) - 1} ${car.dir} ${car.size}"))
+                                    newPosition.add(Car("${car.index} ${car.row} ${it.column + i} ${car.dir} ${car.size}"))
                             }
                             this.add(Node(newPosition, this[0], Move(it.index, dir = 'r', howMuch = i)))
                         } else
@@ -67,14 +63,12 @@ class BFS {
                     if (it.row - i >= 1)
                         if (matres[it.column - 1][(it.row - i) - 1] == 0) {
                             //move to up
-//                            val newPosition = cars.clone() as ArrayList<Car>
-//                            newPosition[it.index - 1].row = it.row - i
                             val newPosition = ArrayList<Car>()
                             this[0].cars.forEach { car ->
                                 if (car.index != it.index)
                                     newPosition.add(Car("${car.index} ${car.row} ${car.column} ${car.dir} ${car.size}"))
                                 else
-                                    newPosition.add(Car("${car.index} ${(it.row - i) - 1} ${car.column} ${car.dir} ${car.size}"))
+                                    newPosition.add(Car("${car.index} ${it.row - i} ${car.column} ${car.dir} ${car.size}"))
                             }
                             this.add(Node(newPosition, this[0], Move(it.index, dir = 'u', howMuch = i)))
                         } else
@@ -88,9 +82,8 @@ class BFS {
                                 if (car.index != it.index)
                                     newPosition.add(Car("${car.index} ${car.row} ${car.column} ${car.dir} ${car.size}"))
                                 else
-                                    newPosition.add(Car("${car.index} ${((it.row + it.size - 1) + i) - 1} ${car.column} ${car.dir} ${car.size}"))
+                                    newPosition.add(Car("${car.index} ${it.row + i} ${car.column} ${car.dir} ${car.size}"))
                             }
-//                            newPosition[it.index - 1].row = it.row + it.size - 1 + i
                             this.add(Node(newPosition, this[0], Move(it.index, dir = 'd', howMuch = i)))
                         } else
                             break
