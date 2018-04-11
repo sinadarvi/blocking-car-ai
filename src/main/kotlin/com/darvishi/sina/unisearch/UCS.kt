@@ -4,18 +4,16 @@ import com.darvishi.sina.Car
 import com.darvishi.sina.Move
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.math.cos
 
 
 class UCS {
 
     private val visitedList = mutableListOf<ArrayList<Car>>()
-    private var iteratorCast = 0
+    private var iteratorCount = 0
+
     fun ArrayList<Car>.findOneWayOut(): ArrayList<Move?> {
 
         val startedTime = Calendar.getInstance().timeInMillis
-
-
         val movesHaveBeenDone = ArrayList<Move?>()
         val comparator = Comparator<Node> { c1, c2 ->
             if(c1.cost > c2.cost)
@@ -43,14 +41,14 @@ class UCS {
         }
         val finishedTime = Calendar.getInstance().timeInMillis
         println("BFS Done it : ${finishedTime - startedTime} milisec")
-        println("With $iteratorCast iterates")
+        println("With $iteratorCount iterates")
         return movesHaveBeenDone
     }
 
     private fun PriorityQueue<Node>.findNodes() {
         val currentNode = this.poll()
         if(!isItVisited(currentNode.map)) {
-            iteratorCast++
+            iteratorCount++
             val matres = getMatres(currentNode.map)
             currentNode.map.forEach {
                 if (it.dir == 'h') {

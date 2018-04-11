@@ -8,7 +8,7 @@ import kotlin.collections.ArrayList
 class IDS {
 
     private var visitedList = mutableListOf<ArrayList<Car>>()
-    private var iteratorCast = 0
+    private var iteratorCount = 0
     fun ArrayList<Car>.findOneWayOut(): ArrayList<Move?> {
 
         val startedTime = Calendar.getInstance().timeInMillis
@@ -22,7 +22,7 @@ class IDS {
             val listOfNodes = mutableListOf<Node>()
             listOfNodes.add(Node(map = this, father = null, move = null))
             visitedList = mutableListOf()
-            iteratorCast = 0
+            iteratorCount = 0
 
             while (listOfNodes.size != 0) {
 
@@ -44,14 +44,14 @@ class IDS {
         }
         val finishedTime = Calendar.getInstance().timeInMillis
         println("BFS Done it : ${finishedTime - startedTime} milisec")
-        println("With $iteratorCast iterates")
+        println("With $iteratorCount iterates")
         return movesHaveBeenDone
     }
 
     private fun MutableList<Node>.findNodes() {
         val currentNode = this[0]
         if (!isItVisited(this[0].map)) {
-            iteratorCast++
+            iteratorCount++
             val matres = getMatres(currentNode.map)
             currentNode.map.forEach {
                 if (it.dir == 'h') {

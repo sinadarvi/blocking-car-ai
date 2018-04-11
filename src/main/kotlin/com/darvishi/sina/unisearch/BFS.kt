@@ -8,7 +8,7 @@ import kotlin.collections.ArrayList
 class BFS {
 
     private val visitedList = mutableListOf<ArrayList<Car>>()
-    private var iteratorCast = 0
+    private var iteratorCount = 0
     fun ArrayList<Car>.findOneWayOut(): ArrayList<Move?> {
 
         val startedTime = Calendar.getInstance().timeInMillis
@@ -32,14 +32,14 @@ class BFS {
         }
         val finishedTime = Calendar.getInstance().timeInMillis
         println("BFS Done it : ${finishedTime - startedTime} milisec")
-        println("With $iteratorCast iterates")
+        println("With $iteratorCount iterates")
         return movesHaveBeenDone
     }
 
     private fun MutableList<Node>.findNodes() {
         val currentNode = this[0]
         if(!isItVisited(this[0].map)) {
-            iteratorCast++
+            iteratorCount++
             val matres = getMatres(currentNode.map)
             currentNode.map.forEach {
                 if (it.dir == 'h') {
@@ -100,34 +100,6 @@ class BFS {
             }
             visitedList.add(currentNode.map)
         }
-    }
-
-    private fun getMatres(cars: ArrayList<Car>): Array<IntArray> {
-        val matres = Array(6, { IntArray(6) })
-        cars.forEach {
-            when (it.dir) {
-                'h' -> {
-                    for (i in 0 until it.size) {
-                        matres[it.column - 1 + i][it.row - 1] = it.index
-                    }
-                }
-                'v' -> {
-                    for (i in 0 until it.size) {
-                        matres[it.column - 1][it.row - 1 + i] = it.index
-                    }
-                }
-            }
-        }
-        return matres
-    }
-
-    private fun ArrayList<Move?>.findMoves(node: Node?) {
-        node?.move?.let { this.add(0, node.move) }
-        node?.father?.let { this.findMoves(node.father) }
-    }
-
-    private fun Node.isItTheAnswer(): Boolean {
-        return this.map[0].column == 5
     }
 
     private fun isItVisited(cars: ArrayList<Car>): Boolean {
