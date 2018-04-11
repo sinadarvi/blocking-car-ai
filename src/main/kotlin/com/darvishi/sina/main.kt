@@ -19,7 +19,7 @@ fun main(args: Array<String>) {
     }
 
     //Cars to Moves
-    with(BFS()) {
+    with(DFS()) {
         moves = cars.findOneWayOut()
     }
 

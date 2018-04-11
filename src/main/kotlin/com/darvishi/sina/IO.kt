@@ -11,9 +11,12 @@ class IO{
 
     fun ArrayList<Move?>.makeActionsFile(){
         File("actions.txt").printWriter().use {
+            var count = 0
             this.forEach {
                 Move -> it.println(Move)
+                count++
             }
+            println("in $count Steps")
         }
     }
 }

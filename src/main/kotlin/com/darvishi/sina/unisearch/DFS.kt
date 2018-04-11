@@ -34,6 +34,7 @@ class DFS{
     private fun MutableList<Node>.findNodes() {
         if(!isItVisited(this[0].cars)) {
             val matres = getMatres(this[0].cars)
+            var count = 1
             this[0].cars.forEach {
                 if (it.dir == 'h') {
                     for (i in 1 until it.column)
@@ -46,7 +47,8 @@ class DFS{
                                 else
                                     newPosition.add(Car("${car.index} ${car.row} ${it.column - i} ${car.dir} ${car.size}"))
                             }
-                            this.add(Node(newPosition, this[0], Move(it.index, dir = 'l', howMuch = i)))
+                            this.add(count,Node(newPosition, this[0], Move(it.index, dir = 'l', howMuch = i)))
+                            count++
                         } else
                             break
                     for (i in 1..(6 - (it.column + it.size - 1)))
@@ -59,7 +61,7 @@ class DFS{
                                 else
                                     newPosition.add(Car("${car.index} ${car.row} ${it.column + i} ${car.dir} ${car.size}"))
                             }
-                            this.add(Node(newPosition, this[0], Move(it.index, dir = 'r', howMuch = i)))
+                            this.add(count,Node(newPosition, this[0], Move(it.index, dir = 'r', howMuch = i)))
                         } else
                             break
                 } else {
@@ -73,7 +75,7 @@ class DFS{
                                 else
                                     newPosition.add(Car("${car.index} ${it.row - i} ${car.column} ${car.dir} ${car.size}"))
                             }
-                            this.add(Node(newPosition, this[0], Move(it.index, dir = 'u', howMuch = i)))
+                            this.add(count,Node(newPosition, this[0], Move(it.index, dir = 'u', howMuch = i)))
                         } else
                             break
                     for (i in 1..(6 - (it.row + it.size - 1)))
@@ -86,7 +88,7 @@ class DFS{
                                 else
                                     newPosition.add(Car("${car.index} ${it.row + i} ${car.column} ${car.dir} ${car.size}"))
                             }
-                            this.add(Node(newPosition, this[0], Move(it.index, dir = 'd', howMuch = i)))
+                            this.add(count,Node(newPosition, this[0], Move(it.index, dir = 'd', howMuch = i)))
                         } else
                             break
                 }
