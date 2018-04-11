@@ -43,7 +43,7 @@ class IDS {
             }
         }
         val finishedTime = Calendar.getInstance().timeInMillis
-        println("BFS Done it : ${finishedTime - startedTime} milisec")
+        println("IDS Done it : ${finishedTime - startedTime} milisec")
         println("With $iteratorCount iterates")
         return movesHaveBeenDone
     }
