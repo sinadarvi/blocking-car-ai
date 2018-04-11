@@ -1,130 +1,139 @@
-//package com.darvishi.sina.unisearch
-//
-//import java.util.ArrayList
-//import java.util.LinkedList
-//import java.util.Queue
-//import java.util.Stack
-//
-//class DFS(internal var start: state, internal var end: state) {
-//    internal var path = ArrayList<String>()
-//    internal var time1: Long = 0
-//    internal var time2: Long = 0
-//    // ArrayList<state> VisitedList = new ArrayList<state>();
-//    internal var ChildList = ArrayList<state>()
-//    internal var fringe = Stack<state>()
-//    internal var find = false
-//    internal var current: state? = null
-//    internal var nodeCounter = 0
-//    internal var maxNodeCounter = 0
-//    internal var maxparentnumber: Int = 0
-//    internal var s: successor? = null
-//
-//
-//    internal var co: state? = null
-//
-//    init {
-//        time1 = System.currentTimeMillis()
-//        start()
-//
-//
-//    }
-//
-//    fun start() {
-//
-//        fringe.push(start)
-//        // VisitedList.add(start);
-//        while (!fringe.isEmpty()) {
-//            current = fringe.pop()
-//            //    VisitedList.add(current);
-//            if (current.compare(end)) {
-//                find = true
-//                time2 = System.currentTimeMillis()
-//                break
-//                // print(true);
-//            }
-//            s = successor(current)
-//            ChildList.clear()
-//            ChildList = s.GetSuccessors()
-//            for (i in ChildList) {
-//                nodeCounter++
-//                if (!isGenerated(i)) {
-//                    fringe.add(i)
-//                }
-//            }
-//            if (fringe.size + maxparentnumber > maxNodeCounter) {
-//                maxNodeCounter = fringe.size + maxparentnumber
-//            }
-//
-//        }
-//
-//        if (!find) {
-//            print(false)
-//        } else {
-//            print(true)
-//        }
-//    }
-//
-//    fun isGenerated(s: state): Boolean {
-//        var temp: state
-//        temp = current//copy(current);
-//        maxparentnumber = 0
-//        while (temp.parent != null) {
-//
-//            if (s.compare(temp)) {
-//                return true
-//            }
-//            maxparentnumber++
-//
-//            temp = temp.parent
-//
-//        }
-//
-//
-//        return false
-//    }
-//
-//
-//    fun print(result: Boolean) {
-//        println("DFS:")
-//        println()
-//        if (result) {
-//
-//            while (current.parent != null) {
-//                path.add(current.PathFromParent)
-//                current = current.parent
-//            }
-//            println("action : " + path.size)
-//            println("Path:")
-//            for (i in path.indices.reversed()) {
-//                println(path[i])
-//            }
-//
-//        } else {
-//            println("No Soloution")
-//        }
-//        println()
-//        // System.out.println("Max Parent Number :" + maxparentnumber);
-//        println("Number of gnarated nodes : " + (nodeCounter + 2))
-//        println("Max number of node in ram : " + (maxNodeCounter + 2))
-//        println("Time = " + (time2 - time1).toFloat() / 1000.toFloat() + " Sec")
-//        println()
-//    }
-//
-//    private fun copy(s: state): state {
-//        co = state(null, s.row, s.column)
-//        co.array = Array(s.row) { CharArray(s.column) }
-//        co.parent = s.parent
-//
-//        //        s = new state(null, curent.row, curent.column);
-//        //        s.array = new char[row][col];
-//        co.PathFromParent = s.PathFromParent
-//        for (i in 0 until s.row) {
-//            for (j in 0 until s.column) {
-//                co.array[i][j] = s.array[i][j]
-//            }
-//        }
-//        return co
-//    }
-//
-//
-//}
+package com.darvishi.sina.unisearch
+
+import com.darvishi.sina.Car
+import com.darvishi.sina.Move
+import java.util.*
+
+class DFS{
+    val visitedList = mutableListOf<ArrayList<Car>>()
+
+    fun ArrayList<Car>.findOneWayOut(): ArrayList<Move?> {
+
+        val startedTime = Calendar.getInstance().timeInMillis
+        val movesHaveBeenDone = ArrayList<Move?>()
+        val listOfNodes = mutableListOf<Node>()
+
+        //adding root node to list of nodes
+        listOfNodes.add(Node(cars = this, father = null, move = null))
+
+        while (listOfNodes.size != 0) {
+            if (listOfNodes[0].isItTheAnswer()) {
+                //some work on finding parents moves and add it to 0 array list
+                movesHaveBeenDone.findMoves(listOfNodes[0])
+                break
+            } else {
+                listOfNodes.findNodes()
+                listOfNodes.removeAt(0)
+            }
+        }
+        val finishedTime = Calendar.getInstance().timeInMillis
+        println("BFS Done it : ${finishedTime - startedTime} milisec")
+        return movesHaveBeenDone
+    }
+
+    private fun MutableList<Node>.findNodes() {
+        if(!isItVisited(this[0].cars)) {
+            val matres = getMatres(this[0].cars)
+            this[0].cars.forEach {
+                if (it.dir == 'h') {
+                    for (i in 1 until it.column)
+                        if (matres[(it.column - i) - 1][it.row - 1] == 0) {
+                            //move to left
+                            val newPosition = ArrayList<Car>()
+                            this[0].cars.forEach { car ->
+                                if (car.index != it.index)
+                                    newPosition.add(Car("${car.index} ${car.row} ${car.column} ${car.dir} ${car.size}"))
+                                else
+                                    newPosition.add(Car("${car.index} ${car.row} ${it.column - i} ${car.dir} ${car.size}"))
+                            }
+                            this.add(Node(newPosition, this[0], Move(it.index, dir = 'l', howMuch = i)))
+                        } else
+                            break
+                    for (i in 1..(6 - (it.column + it.size - 1)))
+                        if (matres[((it.column + it.size - 1) + i) - 1][it.row - 1] == 0) {
+                            //move to right
+                            val newPosition = ArrayList<Car>()
+                            this[0].cars.forEach { car ->
+                                if (car.index != it.index)
+                                    newPosition.add(Car("${car.index} ${car.row} ${car.column} ${car.dir} ${car.size}"))
+                                else
+                                    newPosition.add(Car("${car.index} ${car.row} ${it.column + i} ${car.dir} ${car.size}"))
+                            }
+                            this.add(Node(newPosition, this[0], Move(it.index, dir = 'r', howMuch = i)))
+                        } else
+                            break
+                } else {
+                    for (i in 1 until it.row)
+                        if (matres[it.column - 1][(it.row - i) - 1] == 0) {
+                            //move to up
+                            val newPosition = ArrayList<Car>()
+                            this[0].cars.forEach { car ->
+                                if (car.index != it.index)
+                                    newPosition.add(Car("${car.index} ${car.row} ${car.column} ${car.dir} ${car.size}"))
+                                else
+                                    newPosition.add(Car("${car.index} ${it.row - i} ${car.column} ${car.dir} ${car.size}"))
+                            }
+                            this.add(Node(newPosition, this[0], Move(it.index, dir = 'u', howMuch = i)))
+                        } else
+                            break
+                    for (i in 1..(6 - (it.row + it.size - 1)))
+                        if (matres[it.column - 1][((it.row + it.size - 1) + i) - 1] == 0) {
+                            //move to down
+                            val newPosition = ArrayList<Car>()
+                            this[0].cars.forEach { car ->
+                                if (car.index != it.index)
+                                    newPosition.add(Car("${car.index} ${car.row} ${car.column} ${car.dir} ${car.size}"))
+                                else
+                                    newPosition.add(Car("${car.index} ${it.row + i} ${car.column} ${car.dir} ${car.size}"))
+                            }
+                            this.add(Node(newPosition, this[0], Move(it.index, dir = 'd', howMuch = i)))
+                        } else
+                            break
+                }
+            }
+            visitedList.add(this[0].cars)
+        }
+    }
+
+    private fun getMatres(cars: ArrayList<Car>): Array<IntArray> {
+        val matres = Array(6, { IntArray(6) })
+        cars.forEach {
+            when (it.dir) {
+                'h' -> {
+                    for (i in 0 until it.size) {
+                        matres[it.column - 1 + i][it.row - 1] = it.index
+                    }
+                }
+                'v' -> {
+                    for (i in 0 until it.size) {
+                        matres[it.column - 1][it.row - 1 + i] = it.index
+                    }
+                }
+            }
+        }
+        return matres
+    }
+
+    private fun ArrayList<Move?>.findMoves(node: Node?) {
+        node?.move?.let { this.add(0, node.move) }
+        node?.father?.let { this.findMoves(node.father) }
+    }
+
+    private fun Node.isItTheAnswer(): Boolean {
+        return this.cars[0].column == 5
+    }
+
+    private fun isItVisited(cars: ArrayList<Car>): Boolean {
+        visitedList.forEach {
+            var count = 0
+            for (i in 0 until it.size){
+                if((it[i].row == cars[i].row) && (it[i].column == cars[i].column))
+                    count++
+            }
+            if(count == it.size){
+                return true
+            }
+        }
+        return false
+    }
+}

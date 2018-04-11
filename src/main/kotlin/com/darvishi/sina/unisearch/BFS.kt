@@ -2,17 +2,21 @@ package com.darvishi.sina.unisearch
 
 import com.darvishi.sina.Car
 import com.darvishi.sina.Move
+import java.util.*
+import kotlin.collections.ArrayList
 
 class BFS {
+
+    val visitedList = mutableListOf<ArrayList<Car>>()
+
     fun ArrayList<Car>.findOneWayOut(): ArrayList<Move?> {
 
+        val startedTime = Calendar.getInstance().timeInMillis
         val movesHaveBeenDone = ArrayList<Move?>()
         val listOfNodes = mutableListOf<Node>()
 
         //adding root node to list of nodes
-        listOfNodes.add(Node(this,null,null))
-
-        listOfNodes.findNodes()
+        listOfNodes.add(Node(cars = this, father = null, move = null))
 
         while (listOfNodes.size != 0) {
             if (listOfNodes[0].isItTheAnswer()) {
@@ -20,19 +24,21 @@ class BFS {
                 movesHaveBeenDone.findMoves(listOfNodes[0])
                 break
             } else {
-                listOfNodes.removeAt(0)
                 listOfNodes.findNodes()
+                listOfNodes.removeAt(0)
             }
         }
+        val finishedTime = Calendar.getInstance().timeInMillis
+        println("BFS Done it : ${finishedTime - startedTime} milisec")
         return movesHaveBeenDone
     }
 
     private fun MutableList<Node>.findNodes() {
-        val matres = getMatres(this[0].cars)
-        this[0].cars.forEach {
-            if (it.dir == 'h') {
-                for (i in 1 until it.column)
-                    if (it.column - i >= 1)
+        if(!isItVisited(this[0].cars)) {
+            val matres = getMatres(this[0].cars)
+            this[0].cars.forEach {
+                if (it.dir == 'h') {
+                    for (i in 1 until it.column)
                         if (matres[(it.column - i) - 1][it.row - 1] == 0) {
                             //move to left
                             val newPosition = ArrayList<Car>()
@@ -42,11 +48,10 @@ class BFS {
                                 else
                                     newPosition.add(Car("${car.index} ${car.row} ${it.column - i} ${car.dir} ${car.size}"))
                             }
-                            this.add(Node(newPosition, this[0] , Move(it.index, dir = 'l', howMuch = i)))
+                            this.add(Node(newPosition, this[0], Move(it.index, dir = 'l', howMuch = i)))
                         } else
                             break
-                for (i in 1..(6 - (it.column + it.size - 1)))
-                    if (it.column + it.size - 1 + i <= 6)
+                    for (i in 1..(6 - (it.column + it.size - 1)))
                         if (matres[((it.column + it.size - 1) + i) - 1][it.row - 1] == 0) {
                             //move to right
                             val newPosition = ArrayList<Car>()
@@ -59,9 +64,8 @@ class BFS {
                             this.add(Node(newPosition, this[0], Move(it.index, dir = 'r', howMuch = i)))
                         } else
                             break
-            } else {
-                for (i in 1 until it.row)
-                    if (it.row - i >= 1)
+                } else {
+                    for (i in 1 until it.row)
                         if (matres[it.column - 1][(it.row - i) - 1] == 0) {
                             //move to up
                             val newPosition = ArrayList<Car>()
@@ -74,8 +78,7 @@ class BFS {
                             this.add(Node(newPosition, this[0], Move(it.index, dir = 'u', howMuch = i)))
                         } else
                             break
-                for (i in 1..(6 - (it.row + it.size - 1)))
-                    if (it.row + it.size - 1 + i <= 6)
+                    for (i in 1..(6 - (it.row + it.size - 1)))
                         if (matres[it.column - 1][((it.row + it.size - 1) + i) - 1] == 0) {
                             //move to down
                             val newPosition = ArrayList<Car>()
@@ -88,7 +91,9 @@ class BFS {
                             this.add(Node(newPosition, this[0], Move(it.index, dir = 'd', howMuch = i)))
                         } else
                             break
+                }
             }
+            visitedList.add(this[0].cars)
         }
     }
 
@@ -118,6 +123,20 @@ class BFS {
 
     private fun Node.isItTheAnswer(): Boolean {
         return this.cars[0].column == 5
+    }
+
+    private fun isItVisited(cars: ArrayList<Car>): Boolean {
+        visitedList.forEach {
+            var count = 0
+            for (i in 0 until it.size){
+                if((it[i].row == cars[i].row) && (it[i].column == cars[i].column))
+                    count++
+            }
+            if(count == it.size){
+                return true
+            }
+        }
+        return false
     }
 }
 

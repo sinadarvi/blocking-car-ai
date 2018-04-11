@@ -1,9 +1,8 @@
 package com.darvishi.sina
 
 import com.darvishi.sina.unisearch.BFS
+import com.darvishi.sina.unisearch.DFS
 
-
-class Money(value: Int, type : String)
 fun main(args: Array<String>) {
 
     val cars = ArrayList<Car>()
@@ -11,7 +10,7 @@ fun main(args: Array<String>) {
 
     //Text to Cars
     with(IO()) {
-        "./sampleMap.txt" asResource {
+        "./expert.txt" asResource {
             it.lines().forEach {
                 if (it.length > 1)
                     cars.add(Car(it))
