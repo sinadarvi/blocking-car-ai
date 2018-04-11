@@ -2,6 +2,8 @@ package com.darvishi.sina
 
 import com.darvishi.sina.unisearch.BFS
 import com.darvishi.sina.unisearch.DFS
+import com.darvishi.sina.unisearch.IDS
+import com.darvishi.sina.unisearch.UCS
 
 fun main(args: Array<String>) {
 
@@ -19,7 +21,7 @@ fun main(args: Array<String>) {
     }
 
     //Cars to Moves
-    with(DFS()) {
+    with(UCS()) {
         moves = cars.findOneWayOut()
     }
 

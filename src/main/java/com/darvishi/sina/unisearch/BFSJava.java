@@ -17,7 +17,6 @@ public class BFSJava {
                 case 'v':
                     for (int i = 0; i < car.getSize(); i++)
                         matres[car.getColumn() - 1][car.getRow() - 1 + i] = car.getIndex();
-
             }
         }
 

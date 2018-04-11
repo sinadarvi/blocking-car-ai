@@ -3,18 +3,22 @@ package com.darvishi.sina.unisearch
 import com.darvishi.sina.Car
 import com.darvishi.sina.Move
 import java.util.*
+import kotlin.collections.ArrayList
 
-class DFS{
-    val visitedList = mutableListOf<ArrayList<Car>>()
+class DFS {
 
+    private val visitedList = mutableListOf<ArrayList<Car>>()
+    private var iteratorCast = 0
     fun ArrayList<Car>.findOneWayOut(): ArrayList<Move?> {
 
         val startedTime = Calendar.getInstance().timeInMillis
+
+
         val movesHaveBeenDone = ArrayList<Move?>()
         val listOfNodes = mutableListOf<Node>()
 
         //adding root node to list of nodes
-        listOfNodes.add(Node(cars = this, father = null, move = null))
+        listOfNodes.add(Node(map = this, father = null, move = null))
 
         while (listOfNodes.size != 0) {
             if (listOfNodes[0].isItTheAnswer()) {
@@ -28,26 +32,29 @@ class DFS{
         }
         val finishedTime = Calendar.getInstance().timeInMillis
         println("BFS Done it : ${finishedTime - startedTime} milisec")
+        println("With $iteratorCast iterates")
         return movesHaveBeenDone
     }
 
     private fun MutableList<Node>.findNodes() {
-        if(!isItVisited(this[0].cars)) {
-            val matres = getMatres(this[0].cars)
+        val currentNode = this[0]
+        if(!isItVisited(this[0].map)) {
+            iteratorCast++
+            val matres = getMatres(currentNode.map)
             var count = 1
-            this[0].cars.forEach {
+            currentNode.map.forEach {
                 if (it.dir == 'h') {
                     for (i in 1 until it.column)
                         if (matres[(it.column - i) - 1][it.row - 1] == 0) {
                             //move to left
                             val newPosition = ArrayList<Car>()
-                            this[0].cars.forEach { car ->
+                            currentNode.map.forEach { car ->
                                 if (car.index != it.index)
                                     newPosition.add(Car("${car.index} ${car.row} ${car.column} ${car.dir} ${car.size}"))
                                 else
                                     newPosition.add(Car("${car.index} ${car.row} ${it.column - i} ${car.dir} ${car.size}"))
                             }
-                            this.add(count,Node(newPosition, this[0], Move(it.index, dir = 'l', howMuch = i)))
+                            this.add(count,Node(newPosition, currentNode, Move(it.index, dir = 'l', howMuch = i)))
                             count++
                         } else
                             break
@@ -55,13 +62,14 @@ class DFS{
                         if (matres[((it.column + it.size - 1) + i) - 1][it.row - 1] == 0) {
                             //move to right
                             val newPosition = ArrayList<Car>()
-                            this[0].cars.forEach { car ->
+                            currentNode.map.forEach { car ->
                                 if (car.index != it.index)
                                     newPosition.add(Car("${car.index} ${car.row} ${car.column} ${car.dir} ${car.size}"))
                                 else
                                     newPosition.add(Car("${car.index} ${car.row} ${it.column + i} ${car.dir} ${car.size}"))
                             }
-                            this.add(count,Node(newPosition, this[0], Move(it.index, dir = 'r', howMuch = i)))
+                            this.add(count,Node(newPosition, currentNode, Move(it.index, dir = 'r', howMuch = i)))
+                            count++
                         } else
                             break
                 } else {
@@ -69,31 +77,33 @@ class DFS{
                         if (matres[it.column - 1][(it.row - i) - 1] == 0) {
                             //move to up
                             val newPosition = ArrayList<Car>()
-                            this[0].cars.forEach { car ->
+                            currentNode.map.forEach { car ->
                                 if (car.index != it.index)
                                     newPosition.add(Car("${car.index} ${car.row} ${car.column} ${car.dir} ${car.size}"))
                                 else
                                     newPosition.add(Car("${car.index} ${it.row - i} ${car.column} ${car.dir} ${car.size}"))
                             }
-                            this.add(count,Node(newPosition, this[0], Move(it.index, dir = 'u', howMuch = i)))
+                            this.add(count,Node(newPosition, currentNode, Move(it.index, dir = 'u', howMuch = i)))
+                            count++
                         } else
                             break
                     for (i in 1..(6 - (it.row + it.size - 1)))
                         if (matres[it.column - 1][((it.row + it.size - 1) + i) - 1] == 0) {
                             //move to down
                             val newPosition = ArrayList<Car>()
-                            this[0].cars.forEach { car ->
+                            currentNode.map.forEach { car ->
                                 if (car.index != it.index)
                                     newPosition.add(Car("${car.index} ${car.row} ${car.column} ${car.dir} ${car.size}"))
                                 else
                                     newPosition.add(Car("${car.index} ${it.row + i} ${car.column} ${car.dir} ${car.size}"))
                             }
-                            this.add(count,Node(newPosition, this[0], Move(it.index, dir = 'd', howMuch = i)))
+                            this.add(count,Node(newPosition, currentNode, Move(it.index, dir = 'd', howMuch = i)))
+                            count++
                         } else
                             break
                 }
             }
-            visitedList.add(this[0].cars)
+            visitedList.add(currentNode.map)
         }
     }
 
@@ -122,7 +132,7 @@ class DFS{
     }
 
     private fun Node.isItTheAnswer(): Boolean {
-        return this.cars[0].column == 5
+        return this.map[0].column == 5
     }
 
     private fun isItVisited(cars: ArrayList<Car>): Boolean {
@@ -139,3 +149,7 @@ class DFS{
         return false
     }
 }
+
+
+
+
