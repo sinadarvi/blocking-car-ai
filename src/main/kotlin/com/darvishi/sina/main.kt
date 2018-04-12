@@ -1,5 +1,8 @@
 package com.darvishi.sina
 
+import com.darvishi.sina.uninformed.BFS
+import com.darvishi.sina.uninformed.DFS
+import com.darvishi.sina.uninformed.IDS
 import com.darvishi.sina.uninformed.UCS
 
 fun main(args: Array<String>) {
@@ -9,7 +12,7 @@ fun main(args: Array<String>) {
 
     //Text to Cars
     with(IO()) {
-        "./expert.txt" asResource {
+        Maps.easy1.value asResource {
             it.lines().forEach {
                 if (it.length > 1)
                     cars.add(Car(it))
@@ -18,7 +21,7 @@ fun main(args: Array<String>) {
     }
 
     //Cars to Moves
-    with(UCS()) {
+    with(BFS()) {
         moves = cars.findOneWayOut()
     }
 
@@ -28,6 +31,3 @@ fun main(args: Array<String>) {
     }
 
 }
-
-
-
