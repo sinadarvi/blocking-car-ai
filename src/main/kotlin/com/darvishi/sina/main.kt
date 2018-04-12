@@ -1,6 +1,6 @@
 package com.darvishi.sina
 
-import com.darvishi.sina.uninformedsearch.UCS
+import com.darvishi.sina.uninformed.UCS
 
 fun main(args: Array<String>) {
 

@@ -1,47 +1,55 @@
-package com.darvishi.sina.uninformedsearch
+package com.darvishi.sina.uninformed
 
 import com.darvishi.sina.Car
 import com.darvishi.sina.Move
 import java.util.*
 import kotlin.collections.ArrayList
 
-class DFS {
+
+class UCS {
 
     private val visitedList = mutableListOf<ArrayList<Car>>()
     private var iteratorCount = 0
+
     fun ArrayList<Car>.findOneWayOut(): ArrayList<Move?> {
 
         val startedTime = Calendar.getInstance().timeInMillis
-
-
         val movesHaveBeenDone = ArrayList<Move?>()
-        val listOfNodes = mutableListOf<Node>()
+        val comparator = Comparator<Node> { c1, c2 ->
+            if(c1.cost > c2.cost)
+                c1.cost
+            else
+                c2.cost
+        }
+        val listOfNodes = PriorityQueue<Node>(comparator)
+
+        //Comparator anonymous class implementation
 
         //adding root node to list of nodes
         listOfNodes.add(Node(map = this, father = null, move = null))
 
         while (listOfNodes.size != 0) {
-            if (listOfNodes[0].isItTheAnswer()) {
+            val frontNode = listOfNodes.poll()
+            if (frontNode.isItTheAnswer()) {
                 //some work on finding parents moves and add it to 0 array list
-                movesHaveBeenDone.findMoves(listOfNodes[0])
+                movesHaveBeenDone.findMoves(frontNode)
                 break
             } else {
+                listOfNodes.add(frontNode)
                 listOfNodes.findNodes()
-                listOfNodes.removeAt(0)
             }
         }
         val finishedTime = Calendar.getInstance().timeInMillis
-        println("DFS Done it : ${finishedTime - startedTime} milisec")
+        println("UCS Done it : ${finishedTime - startedTime} milisec")
         println("With $iteratorCount iterates")
         return movesHaveBeenDone
     }
 
-    private fun MutableList<Node>.findNodes() {
-        val currentNode = this[0]
-        if(!isItVisited(this[0].map)) {
+    private fun PriorityQueue<Node>.findNodes() {
+        val currentNode = this.poll()
+        if(!isItVisited(currentNode.map)) {
             iteratorCount++
             val matres = getMatres(currentNode.map)
-            var count = 1
             currentNode.map.forEach {
                 if (it.dir == 'h') {
                     for (i in 1 until it.column)
@@ -54,8 +62,12 @@ class DFS {
                                 else
                                     newPosition.add(Car("${car.index} ${car.row} ${it.column - i} ${car.dir} ${car.size}"))
                             }
-                            this.add(count,Node(newPosition, currentNode, Move(it.index, dir = 'l', howMuch = i)))
-                            count++
+                            var cost = 0
+                            if(it.size == 2)
+                                cost = 2
+                            if(it.size == 3)
+                                cost = 3
+                            this.add(Node(newPosition, currentNode, Move(it.index, dir = 'l', howMuch = i),cost = cost))
                         } else
                             break
                     for (i in 1..(6 - (it.column + it.size - 1)))
@@ -68,8 +80,12 @@ class DFS {
                                 else
                                     newPosition.add(Car("${car.index} ${car.row} ${it.column + i} ${car.dir} ${car.size}"))
                             }
-                            this.add(count,Node(newPosition, currentNode, Move(it.index, dir = 'r', howMuch = i)))
-                            count++
+                            var cost = 0
+                            if(it.size == 2)
+                                cost = 1
+                            if(it.size == 3)
+                                cost = 2
+                            this.add(Node(newPosition, currentNode, Move(it.index, dir = 'r', howMuch = i),cost = cost))
                         } else
                             break
                 } else {
@@ -83,8 +99,12 @@ class DFS {
                                 else
                                     newPosition.add(Car("${car.index} ${it.row - i} ${car.column} ${car.dir} ${car.size}"))
                             }
-                            this.add(count,Node(newPosition, currentNode, Move(it.index, dir = 'u', howMuch = i)))
-                            count++
+                            var cost = 0
+                            if(it.size == 2)
+                                cost = 2
+                            if(it.size == 3)
+                                cost = 3
+                            this.add(Node(newPosition, currentNode, Move(it.index, dir = 'u', howMuch = i),cost = cost))
                         } else
                             break
                     for (i in 1..(6 - (it.row + it.size - 1)))
@@ -97,8 +117,12 @@ class DFS {
                                 else
                                     newPosition.add(Car("${car.index} ${it.row + i} ${car.column} ${car.dir} ${car.size}"))
                             }
-                            this.add(count,Node(newPosition, currentNode, Move(it.index, dir = 'd', howMuch = i)))
-                            count++
+                            var cost = 0
+                            if(it.size == 2)
+                                cost = 1
+                            if(it.size == 3)
+                                cost = 2
+                            this.add(Node(newPosition, currentNode, Move(it.index, dir = 'd', howMuch = i),cost = cost))
                         } else
                             break
                 }
@@ -149,7 +173,3 @@ class DFS {
         return false
     }
 }
-
-
-
-

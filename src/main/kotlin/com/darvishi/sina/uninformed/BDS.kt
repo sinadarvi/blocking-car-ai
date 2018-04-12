@@ -1,4 +1,4 @@
-//package com.darvishi.sina.uninformedsearch
+//package com.darvishi.sina.uninformed
 //
 //import java.util.ArrayList
 //import java.util.LinkedList
