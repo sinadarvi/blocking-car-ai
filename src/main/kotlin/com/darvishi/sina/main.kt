@@ -1,9 +1,6 @@
 package com.darvishi.sina
 
-import com.darvishi.sina.unisearch.BFS
-import com.darvishi.sina.unisearch.DFS
-import com.darvishi.sina.unisearch.IDS
-import com.darvishi.sina.unisearch.UCS
+import com.darvishi.sina.uninformedsearch.UCS
 
 fun main(args: Array<String>) {
 

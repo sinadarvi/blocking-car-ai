@@ -1,4 +1,4 @@
-package com.darvishi.sina.unisearch
+package com.darvishi.sina.uninformedsearch
 
 import com.darvishi.sina.Car
 import com.darvishi.sina.Move
